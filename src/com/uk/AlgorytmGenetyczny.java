@@ -2,52 +2,71 @@ package com.uk;
 
 public class AlgorytmGenetyczny {
 
-    ZbiorPrzedmiotow zbiorPrzedmiotow;
+    ZbiorDanych zbiorDanych;
     Problem problem;
     Populacja populacjaAktualna;
     Populacja populacjaNowa;
 
-    public AlgorytmGenetyczny(Problem problem, ZbiorPrzedmiotow zbiorPrzedmiotow) {
+    public AlgorytmGenetyczny(Problem problem, ZbiorDanych zbiorDanych) {
         this.problem = problem;
-        this.zbiorPrzedmiotow = zbiorPrzedmiotow;
+        this.zbiorDanych = zbiorDanych;
     }
 
     public void szukajRozwiazania() {
+        int liczbaGenow = problem.liczbaKolumn + 1;
 
-        zbiorPrzedmiotow.drukujPrzedmioty();
+        zbiorDanych.toString();
         //Inicjacja populacji początkowej:
-        this.populacjaAktualna = new Populacja(problem.liczbaOsobnikow, problem.liczbaPrzedmiotow);
+        this.populacjaAktualna = new Populacja(liczbaGenow, problem.liczbaOsobnikow, problem.zakresWspolczynnikow);
         this.populacjaAktualna.zainicjujLosowo();
-        populacjaAktualna.ocenOsobniki(problem.wagaMaksymalna, zbiorPrzedmiotow);
+        populacjaAktualna.ocenOsobniki(zbiorDanych);
         System.out.println("populacja początkowa:");
         //najlepsze przystosowanie początkowe
-        populacjaAktualna.drukujNajlepszePrzystosowanie();
-
-        //Inicjacja nowej populacji:
-        this.populacjaNowa = new Populacja(problem.liczbaOsobnikow, problem.liczbaPrzedmiotow);
+        Osobnik najlepszyGlobalnie = populacjaAktualna.szukajNajlepszegoOsobnika();
 
         //dla każdego pokolenia
         for (int nrPokolenia = 1; nrPokolenia <= problem.liczbaEpok; nrPokolenia++) {
-            System.out.println("Pokolenie:"+nrPokolenia);
-            //oceń osobniki:
-            populacjaAktualna.ocenOsobniki(problem.wagaMaksymalna, zbiorPrzedmiotow);
-            //Selekcja osobników
+            // 1. Selekcja (Turniejowa)
+            populacjaNowa = new Populacja(problem.liczbaOsobnikow, liczbaGenow, problem.zakresWspolczynnikow);
+            populacjaNowa.wybierzOsobnikiTurniej(populacjaAktualna, 5); // Turniej rozmiaru 5
 
-            populacjaNowa.wybierzOsobniki(populacjaAktualna);
-
+            // 2. Krzyżowanie
             populacjaNowa.krzyzujPopulacje();
 
-            //TUTAJ POWINNA BYĆ MUTACJA
+            // 3. Mutacja
+            populacjaNowa.mutujPopulacje(problem.prawdopodobienstwoMutacji);
 
-            populacjaNowa.ocenOsobniki(problem.wagaMaksymalna, zbiorPrzedmiotow);
-            populacjaNowa.drukujNajlepszePrzystosowanie();
+            // 4. Ocena
+            populacjaNowa.ocenOsobniki(zbiorDanych);
 
-            populacjaAktualna.podmienPopulacjeAktualna(populacjaNowa);
+            // Elityzm: Zachowaj najlepszego, jeśli nowy najlepszy jest gorszy
+            Osobnik najlepszyWPokoleniu = populacjaNowa.szukajNajlepszegoOsobnika();
+            if (najlepszyWPokoleniu.getWartoscFunkcjiOceniajacej() < najlepszyGlobalnie.getWartoscFunkcjiOceniajacej()) {
+                najlepszyGlobalnie = new Osobnik(najlepszyWPokoleniu);
+            }
 
+            // Podmiana populacji
+            populacjaAktualna = populacjaNowa;
+
+            // Logowanie co 20 pokoleń
+            if (nrPokolenia % 10 == 0 || nrPokolenia == 1) {
+                System.out.printf("Pokolenie %d | Najlepsze MSE: %.4f%n", nrPokolenia, najlepszyGlobalnie.getWartoscFunkcjiOceniajacej());
+            }
+
+            // Jeśli błąd wynosi 0, kończymy wcześniej
+            if (najlepszyGlobalnie.getWartoscFunkcjiOceniajacej() == 0.0f) {
+                System.out.println("Znaleziono idealne rozwiązanie w pokoleniu " + nrPokolenia);
+                break;
+            }
         }
-        System.out.println("Najlepszy osobnik:");
-        populacjaAktualna.ocenOsobniki(problem.wagaMaksymalna, zbiorPrzedmiotow);
-        System.out.println(populacjaAktualna.szukajNajlepszegoOsobnika().toString());
+
+        System.out.println("KONIEC. Znaleziony wzór: " + najlepszyGlobalnie);
     }
+//        System.out.print("Najlepszy osobnik:");
+//        populacjaAktualna.ocenOsobniki(problem.wagaMaksymalna, zbiorDanych);
+//        System.out.println(populacjaAktualna.szukajNajlepszegoOsobnika().toString());
+
+
 
 }
+

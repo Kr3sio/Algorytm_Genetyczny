@@ -1,35 +1,43 @@
 package com.uk;
 
+import java.util.Arrays;
+
 public class Main {
-//    public static final int LICZBA_PRZEDMIOTOW =10;
-//    public static final int LICZBA_OSOBNIKOW =100;
-//    public static final float CIEZAR_MAKS =3.5f;
-//    public static final int LICZBA_POKOLEN=10;
-//    public static final float PRAWDOPODOBIENSTWO_MUTACJI=3.5f;
-
-
     public static void main(String[] args) {
+        // Parametry eksperymentu
+        // Scenariusze: liczba kolumn (zmiennych x) np. 3, 7, 10
+        int[] scenariuszeLiczbyKolumn = {3, 7, 10};
 
-      int liczba_przedmiotow =15;
-      int liczba_osobnikow =1000;
-      float ciezar_maks =2.5f;
-      int liczba_pokolen=100;
-      float prawdopodobieństwo_mutacji=3.5f;
+        for (int liczbaKolumn : scenariuszeLiczbyKolumn) {
+            System.out.println("\n==========================================");
+            System.out.println("START EKSPERYMENTU DLA " + liczbaKolumn + " KOLUMN");
+            System.out.println("==========================================");
 
-  //  ZbiorPrzedmiotow zbiorPrzedmiotow = new ZbiorPrzedmiotow(liczba_przedmiotow);
+            int liczbaOsobnikow = 500; // Większa populacja dla trudniejszych zadań
+            int liczbaPokolen = 100;
+            float prawdopodobienstwoMutacji = 0.05f; // 5% szansy na mutację genu
+            int zakresWspolczynnikow = 10; // szukamy liczb od -10 do 10
 
-    //liczba_przedmiotow =12;
-    ZbiorPrzedmiotow zbiorPrzedmiotow = new ZbiorPrzedmiotow();;
+            // 1. Generowanie danych treningowych
+            // Losujemy "prawdziwy" wzór, którego algorytm ma się nauczyć
+            ZbiorDanych zbiorDanych = new ZbiorDanych();
+            zbiorDanych.generujDane(100, liczbaKolumn, zakresWspolczynnikow);
+            // 100 przykładów uczących
 
+            System.out.println("Prawdziwy wzór (do odgadnięcia): " + Arrays.toString(zbiorDanych.getPrawdziweWspolczynniki()));
 
-    Problem problem = new Problem(liczba_przedmiotow, ciezar_maks,liczba_osobnikow,
-                                  liczba_pokolen, prawdopodobieństwo_mutacji);
+            // 2. Definicja problemu
+            Problem problem = new Problem(
+                    liczbaKolumn,
+                    liczbaOsobnikow,
+                    liczbaPokolen,
+                    prawdopodobienstwoMutacji,
+                    zakresWspolczynnikow
+            );
 
-    AlgorytmGenetyczny algGen = new AlgorytmGenetyczny(problem,zbiorPrzedmiotow);
-
-
-    algGen.szukajRozwiazania();
-
-
+            // 3. Uruchomienie AG
+            AlgorytmGenetyczny algGen = new AlgorytmGenetyczny(problem, zbiorDanych);
+            algGen.szukajRozwiazania();
+        }
     }
 }

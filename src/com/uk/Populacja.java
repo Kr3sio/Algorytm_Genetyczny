@@ -4,123 +4,106 @@ import java.util.Date;
 import java.util.Random;
 
 public class Populacja {
-    private Osobnik[] populacja;
-    private Date date;
+    private Osobnik[] osobniki;
+    private int zakresGenow;
 
-    public Populacja(Integer numerOsobnika, Integer numerPrzedmiotu)
-    {
-        this.populacja = new Osobnik[numerOsobnika];
-        for (int i=0;i<numerOsobnika;i++){
-            populacja[i]=new Osobnik(numerPrzedmiotu);
+    public Populacja(int liczbaOsobnikow, int liczbaGenow, int zakresGenow) {
+        this.osobniki = new Osobnik[liczbaOsobnikow];
+        this.zakresGenow = zakresGenow;
+        for (int i = 0; i < liczbaOsobnikow; i++) {
+            osobniki[i] = new Osobnik(liczbaGenow, zakresGenow);
         }
     }
 
     public void zainicjujLosowo() {
-        for (int i = 0; i < populacja.length; i++) {
-            populacja[i].zainicjujOsobnikaLosowo();
+        for (Osobnik os : osobniki) {
+            os.zainicjujOsobnikaLosowo();
         }
     }
 
-    public void ocenOsobniki(float wagaMaksymalna, ZbiorPrzedmiotow zbiorPrzedmiotow) {
-        for (int nrOsobnika = 0; nrOsobnika < populacja.length; nrOsobnika++) {
-            populacja[nrOsobnika].obliczWagePrzedmiotow(zbiorPrzedmiotow);
-            populacja[nrOsobnika].obliczWartoscPrzedmiotow(zbiorPrzedmiotow);
-            populacja[nrOsobnika].obliczWartoscFunkcjiOceniajacej(wagaMaksymalna);
+    public void ocenOsobniki(ZbiorDanych dane) {
+        for (Osobnik os : osobniki) {
+            os.obliczWartoscFunkcjiOceniajacej(dane);
         }
     }
 
-    public void wypiszPopulacje(){
-        for(int nrOsobnika = 0; nrOsobnika< populacja.length; nrOsobnika++){
-            System.out.println("Osobnik "+ nrOsobnika+":");
-            System.out.println(populacja[nrOsobnika].toString());
+    public void wybierzOsobnikiTurniej(Populacja staraPopulacja, int rozmiarTurnieju) {
+        Random rand = new Random();
+        for (int i = 0; i < osobniki.length; i++) {
+            Osobnik najlepszyWTurnieju = null;
+
+            for (int k = 0; k < rozmiarTurnieju; k++) {
+                int losowyIndeks = rand.nextInt(staraPopulacja.wezRozmiar());
+                Osobnik kandydat = staraPopulacja.wezOsobnik(losowyIndeks);
+
+                if (najlepszyWTurnieju == null || kandydat.wezWartoscFunkcjiOceniajacej() < najlepszyWTurnieju.wezWartoscFunkcjiOceniajacej()) {
+                    najlepszyWTurnieju = kandydat;
+                }
+            }
+            // Kopiujemy zwycięzcę do nowej populacji
+            osobniki[i] = new Osobnik(najlepszyWTurnieju);
         }
     }
+
+//    public void wypiszPopulacje(){
+//        for(int nrOsobnika = 0; nrOsobnika< populacja.length; nrOsobnika++){
+//            System.out.println("Osobnik "+ nrOsobnika+":");
+//            System.out.println(populacja[nrOsobnika].toString());
+//        }
+//    }
     public void drukujNajlepszePrzystosowanie(){
         System.out.println("Najlepsze przystosowanie: "+ szukajNajlepszejOceny());
     }
 
-    public void krzyzujOsobniki(int ind_1, int ind_2){
-        Osobnik osobnikPom=new Osobnik(populacja[ind_1]);
-        Random random=new Random();
-        int punktKrzyzowania= random.nextInt(osobnikPom.wezRozmiar());
-        for (int i = punktKrzyzowania; i<osobnikPom.wezRozmiar(); i++)
-        {
-            populacja[ind_1].ustawPrzedmiot(i, populacja[ind_2].wezPrzedmiot(i));
-            populacja[ind_2].ustawPrzedmiot(i,osobnikPom.wezPrzedmiot(i));
-        }
-
-    }
-
-    public void krzyzujPopulacje(){
-
-        for (int i = 0; i< populacja.length/2; i++){
-            krzyzujOsobniki(2*i,2*i+1);
+    public void krzyzujPopulacje() {
+        // Przechodzimy parami (0,1), (2,3) itd.
+        for (int i = 0; i < osobniki.length - 1; i += 2) {
+            krzyzujOsobniki(osobniki[i], osobniki[i+1]);
         }
     }
+
+    private void krzyzujOsobniki(Osobnik o1, Osobnik o2) {
+        Random rand = new Random();
+        int punktCiecia = rand.nextInt(o1.getLiczbaGenow());
+
+        // Wymiana ogonów
+        for (int i = punktCiecia; i < o1.getLiczbaGenow(); i++) {
+            int temp = o1.getGen(i);
+            o1.setGen(i, o2.getGen(i));
+            o2.setGen(i, temp);
+        }
+    }
+
+    public void mutujPopulacje(float pMutacji) {
+        for (Osobnik os : osobniki) {
+            os.mutacja(pMutacji);
+        }
+    }
+
+
     public int wezRozmiar(){
-        return populacja.length;
+        return osobniki.length;
     }
 
     public Osobnik wezOsobnik(int nrInd){
-        return populacja[nrInd];
+        return osobniki[nrInd];
     }
 
     public float szukajNajlepszejOceny(){
         float max_temp=0f;
-        for (int i = 1; i< populacja.length; i++) {
-            if (max_temp<= populacja[i].wezWartoscFunkcjiOceniajacej()) max_temp= populacja[i].wezWartoscFunkcjiOceniajacej();
+        for (int i = 1; i< osobniki.length; i++) {
+            if (max_temp<= osobniki[i].wezWartoscFunkcjiOceniajacej()) max_temp= osobniki[i].wezWartoscFunkcjiOceniajacej();
         }
         return max_temp;
     }
 
-    public Osobnik szukajNajlepszegoOsobnika(){
-        float max_temp=0f;
-        int nr_mejor=0;
-        for (int i = 1; i< populacja.length; i++) {
-            if (max_temp<= populacja[i].wezWartoscFunkcjiOceniajacej()) {
-                max_temp = populacja[i].wezWartoscFunkcjiOceniajacej();
-                nr_mejor=i;
-            }
-            }
-        return populacja[nr_mejor];
-        };
-
-
-
-    public void wybierzOsobniki(Populacja populacjaPoczatkowa){
-
-        float max_ocena=populacjaPoczatkowa.szukajNajlepszejOceny();
-        Random random=new Random();
-
-        //losujemy osobniki aż nie będziemy mieli odpowiedniej liczby osobników w nowej populacji
-        int liczbaOsobnikowWPopulacji=0;
-        int rozmiarPopulacjiPoczatkowej = populacjaPoczatkowa.wezRozmiar();
-        while (liczbaOsobnikowWPopulacji<(rozmiarPopulacjiPoczatkowej) )
-       {
-        for (int i = 0; i< populacja.length && (liczbaOsobnikowWPopulacji<(rozmiarPopulacjiPoczatkowej)); i++){
-            float aktualnaOcena=populacjaPoczatkowa.wezOsobnik(i).wezWartoscFunkcjiOceniajacej();
-            float wartoscLosowa= random.nextFloat();
-            if (aktualnaOcena>=0) {
-               if (wartoscLosowa*max_ocena<=aktualnaOcena){    //10,15,25
-                 populacja[liczbaOsobnikowWPopulacji]=new Osobnik(populacjaPoczatkowa.wezOsobnik(i));
-                 liczbaOsobnikowWPopulacji++;
-               };
-            }
-            //pozwalamy na to, żeby bardzo słabe osobniki miały szansę na krzyżowanie, ale z małym prawdopodobieństwem
-            else if (wartoscLosowa<0.1f) {
-                populacja[liczbaOsobnikowWPopulacji]=new Osobnik(populacjaPoczatkowa.wezOsobnik(i));
-                liczbaOsobnikowWPopulacji++;
-            }
+    public Osobnik szukajNajlepszegoOsobnika() {
+        Osobnik najlepszy = osobniki[0];
+        for (int i = 1; i < osobniki.length; i++) {
+            if (osobniki[i].getWartoscFunkcjiOceniajacej() < najlepszy.getWartoscFunkcjiOceniajacej()) {
+                najlepszy = osobniki[i];
             }
         }
-
-    }
-
-    public void podmienPopulacjeAktualna(Populacja nowaPopulacja) {
-        this.populacja = new Osobnik[nowaPopulacja.wezRozmiar()];
-
-        for (int i = 0; i< populacja.length; i++){
-            populacja[i]=new Osobnik(nowaPopulacja.wezOsobnik(i));
-        }
+        return najlepszy;
     }
 }

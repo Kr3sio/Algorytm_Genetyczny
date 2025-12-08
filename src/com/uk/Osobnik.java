@@ -5,84 +5,124 @@ import java.util.Random;
 
 public class Osobnik {
 
-    private Integer[] przedmioty;
-
-    private Float wagaPrzedmiotow;
-    private Float wartoscPrzedmiotow;
+    private int[] geny;
     private Float wartoscFunkcjiOceniajacej;
+    private int zakresWspolczynnikow;
 
+    public Osobnik(int liczbaGenow, int zakresWspolczynnikow ) {
 
-    public Osobnik(Integer rozmiar ) {
-
-        przedmioty = new Integer[rozmiar];
+        geny = new int[liczbaGenow];
+        this.zakresWspolczynnikow = zakresWspolczynnikow;
     }
 
   //konstruktor kopiujacy
     public Osobnik(Osobnik osobnik){
-
-        przedmioty = new Integer[osobnik.wezRozmiar()];
-        for (int i = 0; i< przedmioty.length; i++) przedmioty[i]=osobnik.wezPrzedmiot(i);
+        this.geny = Arrays.copyOf(osobnik.geny, osobnik.geny.length);
+        this.wartoscFunkcjiOceniajacej = osobnik.wartoscFunkcjiOceniajacej;
+        this.zakresWspolczynnikow = osobnik.zakresWspolczynnikow;
     }
 
     public Integer wezPrzedmiot(int i) {
-        return przedmioty[i];
+        return geny[i];
     }
 
     public void ustawPrzedmiot(int nrPrzedmiotu, int wartosc) {
-        przedmioty[nrPrzedmiotu] = wartosc;
+        geny[nrPrzedmiotu] = wartosc;
     }
 
 
     public void zainicjujOsobnikaLosowo() {
 
         Random random = new Random();
-        for (int i = 0; i < przedmioty.length; i++){
-            przedmioty[i]= random.nextInt(2);
+        for (int i = 0; i < geny.length; i++){
+            geny[i]= random.nextInt((2 * zakresWspolczynnikow) + 1) -zakresWspolczynnikow;
         }
     }
 
-    public void obliczWartoscFunkcjiOceniajacej(float wagaMaksymalna) {
+    public void obliczWartoscFunkcjiOceniajacej(ZbiorDanych dane) { //TODO zabiór danych
+        double MSE = 0;
+        int liczbaPrzykladow = dane.getLiczbeWierszy();
+        int liczbaZmiennych = dane.getLiczbeKolumn();
 
-        if (wagaPrzedmiotow > wagaMaksymalna) wartoscFunkcjiOceniajacej =-1f;
-        else wartoscFunkcjiOceniajacej = wartoscPrzedmiotow;
+        for (int i = 0; i < liczbaPrzykladow; i++) {
+            double yObliczone = 0;
+
+            for (int j = 0; j < liczbaZmiennych; j++) {
+                yObliczone += geny[j] * dane.getX(i, j);
+            }
+            yObliczone += geny[liczbaZmiennych];
+
+            double yPrawdziwe = dane.getY(i);
+            double blad = yObliczone - yPrawdziwe;
+            MSE += (blad * blad);
+        }
+        this.wartoscFunkcjiOceniajacej = (float) (MSE / liczbaPrzykladow);
     }
 
     public Float wezWartoscFunkcjiOceniajacej() {
         return wartoscFunkcjiOceniajacej;
     }
 
-    public void obliczWagePrzedmiotow(ZbiorPrzedmiotow zbPrzedmiotow) {
-
-        float wagaPom = 0;
-        for (int nrPrzedmiotu = 0; nrPrzedmiotu < zbPrzedmiotow.wezLiczbePrzedmiotow(); nrPrzedmiotu++) {
-
-            if (przedmioty[nrPrzedmiotu] == 1) wagaPom += zbPrzedmiotow.wezWagePrzedmiotu(nrPrzedmiotu);
-        }
-        wagaPrzedmiotow =wagaPom;
-    }
-
-    public void obliczWartoscPrzedmiotow(ZbiorPrzedmiotow zbiorPrzedmiotow) {
-
-        float wartoscPom = 0;
-        for (int nrPrzedmiotu = 0; nrPrzedmiotu < zbiorPrzedmiotow.wezLiczbePrzedmiotow(); nrPrzedmiotu++) {
-
-            if (przedmioty[nrPrzedmiotu] == 1) wartoscPom += zbiorPrzedmiotow.wezWartoscPrzedmiotu(nrPrzedmiotu);
-        }
-        wartoscPrzedmiotow =wartoscPom;
-    }
 
     public int wezRozmiar()
     {
-        return przedmioty.length;
+        return geny.length;
+    }
+
+    public void mutacja (float prawdMutacji) {
+        Random random = new Random();
+        for (int i = 0; i < geny.length; i++){
+            if (random.nextFloat() < prawdMutacji) {
+                geny[i] = random.nextInt((2 * zakresWspolczynnikow) + 1) -zakresWspolczynnikow;
+            }
+        }
+    }
+
+//    @Override
+//    public String toString() {
+//        return "Osobnik{" +
+//                "przedmioty=" + Arrays.toString(geny) +
+//                ", wartość Przedmiotow=" + wartoscPrzedmiotow +
+//                ", waga Przedmiotow=" + wagaPrzedmiotow +
+//                ", ocena osobnika=" + wartoscFunkcjiOceniajacej +
+//                '}';
+//    }
+
+
+    public int getGen(int i) {
+        return geny[i];
+    }
+
+    public void setGen(int i, int wartosc) {
+        geny[i] = wartosc;
+    }
+
+    public int getLiczbaGenow() {
+        return geny.length;
+    }
+
+    public Float getWartoscFunkcjiOceniajacej() {
+        return wartoscFunkcjiOceniajacej;
+    }
+
+    public void setWartoscFunkcjiOceniajacej(Float wartoscFunkcjiOceniajacej) {
+        this.wartoscFunkcjiOceniajacej = wartoscFunkcjiOceniajacej;
+    }
+
+    public int getZakresWspolczynnikow() {
+        return zakresWspolczynnikow;
+    }
+
+    public void setZakresWspolczynnikow(int zakresWspolczynnikow) {
+        this.zakresWspolczynnikow = zakresWspolczynnikow;
     }
 
     @Override
     public String toString() {
         return "Osobnik{" +
-                "przedmioty=" + Arrays.toString(przedmioty) +
-                ", wartość Przedmiotow=" + wartoscPrzedmiotow +
-                ", waga Przedmiotow=" + wagaPrzedmiotow +
-                ", ocena osobnika=" + wartoscFunkcjiOceniajacej +
+                "geny=" + Arrays.toString(geny) +
+                ", wartoscFunkcjiOceniajacej=" + wartoscFunkcjiOceniajacej +
+                ", zakresWspolczynnikow=" + zakresWspolczynnikow +
                 '}';
     }
 }

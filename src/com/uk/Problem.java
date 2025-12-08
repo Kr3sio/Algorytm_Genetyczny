@@ -1,19 +1,17 @@
 package com.uk;
 
-public class Problem {
-    int liczbaPrzedmiotow;
+class Problem {
+    int liczbaKolumn;
     int liczbaOsobnikow;
-    float wagaMaksymalna;
     int liczbaEpok;
     float prawdopodobienstwoMutacji;
+    int zakresWspolczynnikow;
 
-    public Problem(int liczbaPrzedmiotow, float wagaMaksymalna,
-                   int liczbaOsobnikow, int liczbaPokolen,
-                   float prawdopodobienstwoMutacji) {
-        this.liczbaPrzedmiotow = liczbaPrzedmiotow;
+    public Problem(int liczbaKolumn, int liczbaOsobnikow, int liczbaEpok, float prawdMutacji, int zakres) {
+        this.liczbaKolumn = liczbaKolumn;
         this.liczbaOsobnikow = liczbaOsobnikow;
-        this.wagaMaksymalna = wagaMaksymalna;
-        this.liczbaEpok = liczbaPokolen;
-        this.prawdopodobienstwoMutacji = prawdopodobienstwoMutacji;
+        this.liczbaEpok = liczbaEpok;
+        this.prawdopodobienstwoMutacji = prawdMutacji;
+        this.zakresWspolczynnikow = zakres;
     }
 }
