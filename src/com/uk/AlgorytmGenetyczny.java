@@ -1,5 +1,7 @@
 package com.uk;
 
+import java.util.Arrays;
+
 public class AlgorytmGenetyczny {
 
     ZbiorDanych zbiorDanych;
@@ -60,7 +62,7 @@ public class AlgorytmGenetyczny {
             }
         }
 
-        System.out.println("KONIEC. Znaleziony wzór: " + najlepszyGlobalnie);
+        System.out.println("KONIEC. Znaleziony wzór: " + Arrays.toString(najlepszyGlobalnie.getwzor(liczbaGenow)));
     }
 //        System.out.print("Najlepszy osobnik:");
 //        populacjaAktualna.ocenOsobniki(problem.wagaMaksymalna, zbiorDanych);

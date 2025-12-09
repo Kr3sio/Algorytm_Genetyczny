@@ -22,15 +22,6 @@ public class Osobnik {
         this.zakresWspolczynnikow = osobnik.zakresWspolczynnikow;
     }
 
-    public Integer wezPrzedmiot(int i) {
-        return geny[i];
-    }
-
-    public void ustawPrzedmiot(int nrPrzedmiotu, int wartosc) {
-        geny[nrPrzedmiotu] = wartosc;
-    }
-
-
     public void zainicjujOsobnikaLosowo() {
 
         Random random = new Random();
@@ -63,11 +54,6 @@ public class Osobnik {
         return wartoscFunkcjiOceniajacej;
     }
 
-
-    public int wezRozmiar()
-    {
-        return geny.length;
-    }
 
     public void mutacja (float prawdMutacji) {
         Random random = new Random();
@@ -115,6 +101,14 @@ public class Osobnik {
 
     public void setZakresWspolczynnikow(int zakresWspolczynnikow) {
         this.zakresWspolczynnikow = zakresWspolczynnikow;
+    }
+
+    public int [] getwzor( int koniec) {
+        int [] wzor = new int [koniec];
+        for (int i = 0; i < koniec; i++) {
+            wzor[i] = geny[i];
+        }
+        return wzor;
     }
 
     @Override
