@@ -13,8 +13,8 @@ public class Main {
             System.out.println("START EKSPERYMENTU DLA " + liczbaKolumn + " KOLUMN");
             System.out.println("==========================================");
 
-            int liczbaOsobnikow = 500; // Większa populacja dla trudniejszych zadań
-            int liczbaPokolen = 100;
+            int liczbaOsobnikow = 1000; // Większa populacja dla trudniejszych zadań
+            int liczbaPokolen = 30;
             float prawdopodobienstwoMutacji = 0.05f; // 5% szansy na mutację genu
             int zakresWspolczynnikow = 10; // szukamy liczb od -10 do 10
 

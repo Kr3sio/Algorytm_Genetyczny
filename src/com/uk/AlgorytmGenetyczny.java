@@ -19,7 +19,7 @@ public class AlgorytmGenetyczny {
 
         zbiorDanych.toString();
         //Inicjacja populacji początkowej:
-        this.populacjaAktualna = new Populacja(liczbaGenow, problem.liczbaOsobnikow, problem.zakresWspolczynnikow);
+        this.populacjaAktualna = new Populacja( problem.liczbaOsobnikow,liczbaGenow, problem.zakresWspolczynnikow);
         this.populacjaAktualna.zainicjujLosowo();
         populacjaAktualna.ocenOsobniki(zbiorDanych);
         System.out.println("populacja początkowa:");
@@ -61,12 +61,8 @@ public class AlgorytmGenetyczny {
                 break;
             }
         }
-
-        System.out.println("KONIEC. Znaleziony wzór: " + Arrays.toString(najlepszyGlobalnie.getwzor(liczbaGenow)));
+        System.out.println("KONIEC. Znaleziony wzór: " + najlepszyGlobalnie);
     }
-//        System.out.print("Najlepszy osobnik:");
-//        populacjaAktualna.ocenOsobniki(problem.wagaMaksymalna, zbiorDanych);
-//        System.out.println(populacjaAktualna.szukajNajlepszegoOsobnika().toString());
 
 
 
