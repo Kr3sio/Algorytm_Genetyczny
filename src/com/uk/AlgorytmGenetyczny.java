@@ -17,12 +17,12 @@ public class AlgorytmGenetyczny {
     public void szukajRozwiazania() {
         int liczbaGenow = problem.liczbaKolumn + 1;
 
-        zbiorDanych.toString();
+//        zbiorDanych.toString();
         //Inicjacja populacji początkowej:
         this.populacjaAktualna = new Populacja( problem.liczbaOsobnikow,liczbaGenow, problem.zakresWspolczynnikow);
         this.populacjaAktualna.zainicjujLosowo();
         populacjaAktualna.ocenOsobniki(zbiorDanych);
-        System.out.println("populacja początkowa:");
+//        System.out.println("populacja początkowa:");
         //najlepsze przystosowanie początkowe
         Osobnik najlepszyGlobalnie = populacjaAktualna.szukajNajlepszegoOsobnika();
 
@@ -51,7 +51,7 @@ public class AlgorytmGenetyczny {
             populacjaAktualna = populacjaNowa;
 
             // Logowanie co 20 pokoleń
-            if (nrPokolenia % 10 == 0 || nrPokolenia == 1) {
+            if (nrPokolenia % 1000 == 0 || nrPokolenia == 1) {
                 System.out.printf("Pokolenie %d | Najlepsze MSE: %.4f%n", nrPokolenia, najlepszyGlobalnie.getWartoscFunkcjiOceniajacej());
             }
 

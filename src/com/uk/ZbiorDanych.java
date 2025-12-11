@@ -29,6 +29,35 @@ public class ZbiorDanych {
 
     }
 
+    public void generujDaneBezWzoru(int liczbaWierszy, int liczbaKolumn, int zakresWartosci, int [] wzor) {
+        Random rand = new Random();
+        x = new double[liczbaWierszy][liczbaKolumn];
+        y = new double[liczbaWierszy];
+
+        prawdziweWspolczynniki = new int[liczbaKolumn + 1];
+        int[] temp = new int [prawdziweWspolczynniki.length];
+        for(int i = 0;i<prawdziweWspolczynniki.length;i++){
+            temp[i]= wzor[i];
+        }
+
+
+        prawdziweWspolczynniki = temp;
+
+
+
+
+        for (int i = 0; i < liczbaWierszy; i++) {
+            double yVal = 0;
+            for (int j = 0; j < liczbaKolumn; j++) {
+                x[i][j] = rand.nextInt(201) - 100;
+                yVal += prawdziweWspolczynniki[j] * x[i][j];
+            }
+            yVal += prawdziweWspolczynniki[liczbaKolumn];
+            y[i] = yVal;
+        }
+
+    }
+
 //    public ZbiorDanychStale(){
 //    }
 
