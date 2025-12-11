@@ -30,7 +30,7 @@ public class Osobnik {
         }
     }
 
-    public void obliczWartoscFunkcjiOceniajacej(ZbiorDanych dane) { //TODO zabiór danych
+    public void obliczWartoscFunkcjiOceniajacej(ZbiorDanych dane) {
         double MSE = 0;
         int liczbaPrzykladow = dane.getLiczbeWierszy();
         int liczbaZmiennych = dane.getLiczbeKolumn();
@@ -103,12 +103,8 @@ public class Osobnik {
         this.zakresWspolczynnikow = zakresWspolczynnikow;
     }
 
-    public int [] getwzor( int koniec) {
-        int [] wzor = new int [koniec];
-        for (int i = 0; i < koniec; i++) {
-            wzor[i] = geny[i];
-        }
-        return wzor;
+    public String getGeny() {
+        return Arrays.toString(geny);
     }
 
     @Override

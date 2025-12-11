@@ -1,7 +1,5 @@
 package com.uk;
 
-import java.util.Arrays;
-
 public class AlgorytmGenetyczny {
 
     ZbiorDanych zbiorDanych;
@@ -17,12 +15,11 @@ public class AlgorytmGenetyczny {
     public void szukajRozwiazania() {
         int liczbaGenow = problem.liczbaKolumn + 1;
 
-//        zbiorDanych.toString();
+
         //Inicjacja populacji początkowej:
         this.populacjaAktualna = new Populacja( problem.liczbaOsobnikow,liczbaGenow, problem.zakresWspolczynnikow);
         this.populacjaAktualna.zainicjujLosowo();
         populacjaAktualna.ocenOsobniki(zbiorDanych);
-//        System.out.println("populacja początkowa:");
         //najlepsze przystosowanie początkowe
         Osobnik najlepszyGlobalnie = populacjaAktualna.szukajNajlepszegoOsobnika();
 
@@ -41,7 +38,7 @@ public class AlgorytmGenetyczny {
             // 4. Ocena
             populacjaNowa.ocenOsobniki(zbiorDanych);
 
-            // Elityzm: Zachowaj najlepszego, jeśli nowy najlepszy jest gorszy
+            // Zachowaj najlepszego, jeśli nowy najlepszy jest gorszy
             Osobnik najlepszyWPokoleniu = populacjaNowa.szukajNajlepszegoOsobnika();
             if (najlepszyWPokoleniu.getWartoscFunkcjiOceniajacej() < najlepszyGlobalnie.getWartoscFunkcjiOceniajacej()) {
                 najlepszyGlobalnie = new Osobnik(najlepszyWPokoleniu);
@@ -50,9 +47,9 @@ public class AlgorytmGenetyczny {
             // Podmiana populacji
             populacjaAktualna = populacjaNowa;
 
-            // Logowanie co 20 pokoleń
-            if (nrPokolenia % 1000 == 0 || nrPokolenia == 1) {
-                System.out.printf("Pokolenie %d | Najlepsze MSE: %.4f%n", nrPokolenia, najlepszyGlobalnie.getWartoscFunkcjiOceniajacej());
+            // Logowanie co X pokoleń
+            if (nrPokolenia % 10 == 0 || nrPokolenia == 1) {
+                System.out.printf("Pokolenie %d | Geny %S| Najlepsze MSE: %.4f%n", nrPokolenia, najlepszyGlobalnie.getGeny(),najlepszyGlobalnie.getWartoscFunkcjiOceniajacej());
             }
 
             // Jeśli błąd wynosi 0, kończymy wcześniej

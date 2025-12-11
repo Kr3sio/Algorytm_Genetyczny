@@ -1,6 +1,6 @@
 package com.uk;
 
-import java.util.Date;
+import java.util.Arrays;
 import java.util.Random;
 
 public class Populacja {
@@ -107,4 +107,10 @@ public class Populacja {
         return najlepszy;
     }
 
+    @Override
+    public String toString() {
+        return "Populacja{" +
+                "osobniki=" + Arrays.toString(osobniki) +
+                '}';
+    }
 }

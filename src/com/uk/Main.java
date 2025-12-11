@@ -6,15 +6,17 @@ public class Main {
     public static void main(String[] args) {
         // Parametry eksperymentu
         // Scenariusze: liczba kolumn (zmiennych x) np. 3, 7, 10
-        int[] scenariuszeLiczbyKolumn = {4, 4, 4};
+//        int[] scenariuszeLiczbyKolumn = {3, 3, 3, 3, 3, 3, 3, 3, 3, 3};
+//        int[] scenariuszeLiczbyKolumn = {7, 7, 7, 7, 7, 7, 7, 7, 7, 7};
+        int[] scenariuszeLiczbyKolumn = {10, 10, 10, 10, 10, 10, 10, 10, 10, 10};
 
         for (int liczbaKolumn : scenariuszeLiczbyKolumn) {
             System.out.println("\n==========================================");
             System.out.println("START EKSPERYMENTU DLA " + liczbaKolumn + " KOLUMN");
             System.out.println("==========================================");
 
-            int liczbaOsobnikow = 200; // Większa populacja dla trudniejszych zadań
-            int liczbaPokolen = 100;
+            int liczbaOsobnikow = 100; // Większa populacja dla trudniejszych zadań
+            int liczbaPokolen = 50;
             float prawdopodobienstwoMutacji = 0.05f; // 5% szansy na mutację genu
             int zakresWspolczynnikow = 10; // szukamy liczb od -10 do 10
 
@@ -24,7 +26,6 @@ public class Main {
             ZbiorDanych zbiorDanych = new ZbiorDanych();
             zbiorDanych.generujDaneBezWzoru(100, liczbaKolumn, zakresWspolczynnikow, wzor);
 //            zbiorDanych.generujDane(100, liczbaKolumn, zakresWspolczynnikow);
-            // 100 przykładów uczących
 
 
             System.out.println("Prawdziwy wzór (do odgadnięcia): " + Arrays.toString(zbiorDanych.getPrawdziweWspolczynniki()));

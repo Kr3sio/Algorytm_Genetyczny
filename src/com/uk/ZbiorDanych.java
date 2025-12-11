@@ -6,7 +6,7 @@ import java.util.Random;
 public class ZbiorDanych {
     private double[][] x; // Dane wejściowe
     private double[] y;   // Dane wyjściowe (oczekiwane)
-    private int[] prawdziweWspolczynniki; // Do weryfikacji
+    private int[] prawdziweWspolczynniki;
 
     public void generujDane(int liczbaWierszy, int liczbaKolumn, int zakresWartosci) {
         Random rand = new Random();
@@ -36,15 +36,11 @@ public class ZbiorDanych {
 
         prawdziweWspolczynniki = new int[liczbaKolumn + 1];
         int[] temp = new int [prawdziweWspolczynniki.length];
-        for(int i = 0;i<prawdziweWspolczynniki.length;i++){
+        for(int i = 0;i < prawdziweWspolczynniki.length;i++){
             temp[i]= wzor[i];
         }
 
-
         prawdziweWspolczynniki = temp;
-
-
-
 
         for (int i = 0; i < liczbaWierszy; i++) {
             double yVal = 0;
@@ -57,9 +53,6 @@ public class ZbiorDanych {
         }
 
     }
-
-//    public ZbiorDanychStale(){
-//    }
 
     public double getX(int wiersz, int kolumna) { return x[wiersz][kolumna]; }
 
